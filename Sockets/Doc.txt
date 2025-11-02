@@ -1,0 +1,2 @@
+OSI 7 Layers: Application -> Presentaion -> Session -> Transport -> Network -> DataLink -> Physical
+                                            (socket)
