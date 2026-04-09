@@ -1,7 +1,7 @@
 # Shared Memory & Semaphore - Producer-Consumer System
 
 ## 📋 Tổng Quan Hệ Thống
-
+![alt text](<Screenshot From 2026-04-09 10-56-10.png>)
 Hệ thống này minh họa **Producer-Consumer Pattern** sử dụng **POSIX Shared Memory** và **Semaphore** để đồng bộ hóa dữ liệu giữa các process.
 
 ### Các Thành Phần:
