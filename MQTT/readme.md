@@ -152,3 +152,6 @@ Sự cố: Client bị rớt mạng đột ngột (Broker không nhận được
 Thực thi: Broker nhận thấy Client "mất tích", nó sẽ tự động lấy bản tin Offline và Publish vào topic device/status cho tất cả mọi người cùng biết.
 
 Kết nối lại: Khi thiết bị Online trở lại, nó thường sẽ Publish một bản tin Online (có kèm cờ Retain) để cập nhật lại trạng thái.
+
+![alt text](<Screenshot From 2026-04-10 14-04-17.png>)
+![alt text](<Screenshot From 2026-04-10 14-04-58.png>)

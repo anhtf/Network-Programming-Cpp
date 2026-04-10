@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>MQTT Web Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px;">
+
+    <h2>Bảng điều khiển IoT (WebSockets)</h2>
+    
+    <div style="margin-bottom: 20px;">
+        <h3>Nhiệt độ phòng: <span id="nhiet_do_hien_thi">--</span> °C</h3>
+    </div>
+
+    <div>
+        <button onclick="batDen()">BẬT ĐÈN</button>
+        <button onclick="tatDen()">TẮT ĐÈN</button>
+    </div>
+
+    <script>
+        // 1. Khởi tạo Client (Lưu ý: Kết nối vào cổng 9001)
+        var broker = "localhost"; // Thay bằng IP Server nếu chạy thực tế
+        var port = 9001; 
+        var clientId = "TrinhDuyetWeb_" + Math.random().toString(16).substr(2, 8);
+        
+        var client = new Paho.MQTT.Client(broker, port, clientId);
+
+        // 2. Định nghĩa các hàm Callback
+        client.onConnectionLost = function(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("Mất kết nối: " + responseObject.errorMessage);
+            }
+        };
+
+        // Hàm được gọi tự động khi Broker gửi dữ liệu về Web
+        client.onMessageArrived = function(message) {
+            console.log("Nhận tin từ Topic " + message.destinationName + ": " + message.payloadString);
+            
+            // Cập nhật giao diện HTML
+            if (message.destinationName === "nha_cua/nhiet_do") {
+                document.getElementById("nhiet_do_hien_thi").innerText = message.payloadString;
+            }
+        };
+
+        // 3. Thực hiện kết nối
+        var options = {
+            timeout: 3,
+            onSuccess: function() {
+                console.log("Đã kết nối WebSockets thành công!");
+                // Kết nối xong thì Đăng ký theo dõi nhiệt độ
+                client.subscribe("nha_cua/nhiet_do");
+            },
+            onFailure: function(message) {
+                console.log("Kết nối thất bại: " + message.errorMessage);
+            }
+        };
+        client.connect(options);
+
+        // 4. Hàm để Gửi lệnh từ Web xuống Thiết bị
+        function batDen() {
+            var message = new Paho.MQTT.Message("ON");
+            message.destinationName = "nha_cua/den/lenh";
+            client.send(message);
+        }
+
+        function tatDen() {
+            var message = new Paho.MQTT.Message("OFF");
+            message.destinationName = "nha_cua/den/lenh";
+            client.send(message);
+        }
+    </script>
+</body>
+</html>
